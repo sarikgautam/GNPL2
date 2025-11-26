@@ -1,0 +1,33 @@
+{
+  "Himalayan Heat": {
+    "color": "#ef4444",
+    "bg": "bg-red-500",
+    "text": "text-red-400",
+    "border": "border-red-500",
+    "logo": "/images/himalayan-heat.jpg"
+  },
+
+  "GoldCoast Super Kings": {
+    "color": "#facc15",
+    "bg": "bg-yellow-500",
+    "text": "text-yellow-400",
+    "border": "border-yellow-500",
+    "logo": "/images/super-kings.jpg"
+  },
+
+  "Yeti Strikers": {
+    "color": "#22d3ee",
+    "bg": "bg-cyan-500",
+    "text": "text-cyan-400",
+    "border": "border-cyan-500",
+    "logo": "/images/yeti-strikers.jpg"
+  },
+
+  "Gorkha Thunders": {
+    "color": "#a855f7",
+    "bg": "bg-purple-500",
+    "text": "text-purple-400",
+    "border": "border-purple-500",
+    "logo": "/images/gorkha-thunders.jpg"
+  }
+}
