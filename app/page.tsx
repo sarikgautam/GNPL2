@@ -1,5 +1,6 @@
 import Countdown from "./components/Countdown"
 import TeamSlider from "./components/TeamSlider"
+import Sponsors from "./components/Sponsors"
 
 
 export default function HomePage() {
@@ -161,6 +162,12 @@ export default function HomePage() {
         </a>
 
       </section>
+      <section className="py-20 bg-black">
+  <div className="max-w-6xl mx-auto px-6">
+    <Sponsors />
+  </div>
+</section>
+
 
       {/* FINAL CTA */}
       <section className="text-center space-y-4">
