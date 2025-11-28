@@ -152,7 +152,7 @@ export default function AutoPointsTable() {
   if (!table.length) return null
 
   return (
-    <section className="py-20 bg-[#0f0f0f]">
+    <section className="py-20 bg-[#0f0f0f] text-white">
       <div className="max-w-6xl mx-auto px-6">
 
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">
@@ -163,7 +163,7 @@ export default function AutoPointsTable() {
           <table className="w-full border border-[#501f3a] text-sm md:text-base">
 
             <thead>
-              <tr className="bg-black">
+                <tr className="bg-black text-white">
                 <th className="p-3 text-left">#</th>
                 <th className="text-left">Team</th>
                 <th>M</th>
