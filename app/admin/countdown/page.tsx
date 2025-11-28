@@ -1,76 +1,60 @@
 "use client"
 
-import { useState } from "react"
-import countdownData from "@/data/countdown.json"
+import { useState, useEffect } from "react"
+import { supabase } from "@/lib/supabase"
 
-export default function AdminCountdownPage() {
+export default function AdminCountdown() {
 
-  const [title, setTitle] = useState(countdownData.title)
-  const [date, setDate] = useState(countdownData.date)
-  const [status, setStatus] = useState("")
+  const [date, setDate] = useState("")
+  const [message, setMessage] = useState("")
 
-  const handleSubmit = async () => {
-    const response = await fetch("/api/countdown", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, date }),
-    })
+  useEffect(() => {
+    fetchDate()
+  }, [])
 
-    if (response.ok) {
-      setStatus("✅ Countdown updated successfully")
-    } else {
-      setStatus("❌ Error updating countdown")
+  const fetchDate = async () => {
+    const { data } = await supabase
+      .from("countdown")
+      .select("*")
+      .limit(1)
+      .single()
+
+    if (data) {
+      setDate(data.event_date.slice(0, 16))
     }
   }
 
-  return (
-    <div className="max-w-xl space-y-8">
+  const updateDate = async () => {
+    const { error } = await supabase
+      .from("countdown")
+      .update({ event_date: date })
+      .eq("id", 1)
 
-      <h1 className="text-2xl font-bold text-emerald-400">
-        Edit Countdown (Admin)
+    if (!error) setMessage("✅ Countdown updated successfully!")
+  }
+
+  return (
+    <div className="max-w-md mx-auto p-6 space-y-4">
+
+      <h1 className="text-2xl font-bold text-[#cb2d6f]">
+        Update Countdown
       </h1>
 
-      <div className="space-y-4 rounded-2xl border border-slate-700 bg-slate-950 p-6">
+      <input
+        type="datetime-local"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        className="w-full p-2 rounded text-black"
+      />
 
-        <div>
-          <label className="text-xs text-slate-400">
-            Countdown Title
-          </label>
+      <button
+        onClick={updateDate}
+        className="bg-[#14a098] text-black font-bold px-6 py-2 rounded"
+      >
+        Save
+      </button>
 
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm"
-          />
-        </div>
-
-        <div>
-          <label className="text-xs text-slate-400">
-            Date & Time
-          </label>
-
-          <input
-            type="datetime-local"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm"
-          />
-        </div>
-
-        <button
-          onClick={handleSubmit}
-          className="w-full rounded-full bg-emerald-500 py-3 text-sm font-bold text-black transition hover:bg-emerald-400"
-        >
-          Update Countdown
-        </button>
-
-        {status && (
-          <p className="text-sm text-emerald-400">
-            {status}
-          </p>
-        )}
-
-      </div>
+      {message && <p className="text-green-500">{message}</p>}
 
     </div>
   )

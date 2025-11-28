@@ -1,6 +1,12 @@
 import Countdown from "./components/Countdown"
 import TeamSlider from "./components/TeamSlider"
 import Sponsors from "./components/Sponsors"
+import Hero from "./components/Hero"
+import TeamsSection from "./components/TeamsSection"
+import PointsTable from "@/app/components/PointsTable"
+import AutoPointsTable from "@/app/components/AutoPointsTable"
+import NextMatch from "@/app/components/NextMatch"
+
 
 
 export default function HomePage() {
@@ -45,14 +51,18 @@ export default function HomePage() {
           </a>
         </div>
       </section>
-
+      {/* COUNTDOWN TIMER */}
+      <Countdown />
       {/* TEAM SLIDER */}
       <section>
         <TeamSlider />
-     
       </section>
-      {/* COUNTDOWN TIMER */}
-      <Countdown />
+      <section>
+        <NextMatch />
+      </section>
+      <section>
+        <AutoPointsTable />
+      </section>
 
       {/* ABOUT GNPL SECTION */}
       <section className="grid gap-12 md:grid-cols-2 items-center">
@@ -162,12 +172,6 @@ export default function HomePage() {
         </a>
 
       </section>
-      <section className="py-20 bg-black">
-  <div className="max-w-6xl mx-auto px-6">
-    <Sponsors />
-  </div>
-</section>
-
 
       {/* FINAL CTA */}
       <section className="text-center space-y-4">

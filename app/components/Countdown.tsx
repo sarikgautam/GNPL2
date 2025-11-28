@@ -1,73 +1,102 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import countdownData from "@/data/countdown.json"
+import { supabase } from "@/lib/supabase"
 
 export default function Countdown() {
 
-  const targetDate = new Date(countdownData.date).getTime()
-  const title = countdownData.title
-
-  const [timeLeft, setTimeLeft] = useState(targetDate - new Date().getTime())
+  const [timeLeft, setTimeLeft] = useState<any>(null)
+  const [eventName, setEventName] = useState("")
+  const [live, setLive] = useState(false)
 
   useEffect(() => {
+    fetchDate()
+  }, [])
+
+  useEffect(() => {
+    if (!timeLeft?.target) return
+
     const interval = setInterval(() => {
-      setTimeLeft(targetDate - new Date().getTime())
+      const now = new Date().getTime()
+      const distance = timeLeft.target - now
+
+      if (distance < 0) {
+        clearInterval(interval)
+        setLive(true)
+        return
+      }
+
+      setTimeLeft({
+        target: timeLeft.target,
+        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((distance / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((distance / (1000 * 60)) % 60),
+        seconds: Math.floor((distance / 1000) % 60),
+      })
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [targetDate])
+  }, [timeLeft?.target])
 
-  if (timeLeft <= 0) {
-    return (
-      <div className="rounded-2xl border border-emerald-500 bg-emerald-500/10 p-8 text-center">
-        <h2 className="text-2xl font-bold text-emerald-400">
-          🏏 GNPL Event is Live / Started!
-        </h2>
-      </div>
-    )
+  const fetchDate = async () => {
+    const { data } = await supabase
+      .from("countdown")
+      .select("*")
+      .limit(1)
+      .single()
+
+    if (data) {
+      setEventName(data.title)
+      setTimeLeft({
+        target: new Date(data.event_date).getTime(),
+      })
+    }
   }
 
-  const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24))
-  const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24)
-  const minutes = Math.floor((timeLeft / 1000 / 60) % 60)
-  const seconds = Math.floor((timeLeft / 1000) % 60)
+  if (!timeLeft) return null
 
   return (
-    <section className="rounded-2xl border border-emerald-500/40 bg-gradient-to-br from-emerald-500/10 via-slate-950 to-slate-950 p-8 text-center space-y-6">
+    <section className="py-20 bg-[#0f0f0f] text-center">
 
-      <p className="text-xs uppercase tracking-[0.2em] text-emerald-400">
-        Next Big Event
-      </p>
-
-      <h2 className="text-3xl font-bold text-white">
-        {title}
+      <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+        {eventName}
       </h2>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      {live ? (
 
-        <div className="rounded-xl bg-slate-900 p-4">
-          <p className="text-3xl font-bold text-emerald-400">{days}</p>
-          <p className="text-xs text-slate-400">Days</p>
+        <p className="text-red-500 font-bold text-4xl animate-pulse">
+          🔴 LIVE NOW
+        </p>
+
+      ) : (
+
+        <div className="flex justify-center gap-6 text-white">
+
+          <TimeBox label="DAYS" value={timeLeft.days} />
+          <TimeBox label="HOURS" value={timeLeft.hours} />
+          <TimeBox label="MIN" value={timeLeft.minutes} />
+          <TimeBox label="SEC" value={timeLeft.seconds} />
+
         </div>
+      )}
 
-        <div className="rounded-xl bg-slate-900 p-4">
-          <p className="text-3xl font-bold text-emerald-400">{hours}</p>
-          <p className="text-xs text-slate-400">Hours</p>
-        </div>
-
-        <div className="rounded-xl bg-slate-900 p-4">
-          <p className="text-3xl font-bold text-emerald-400">{minutes}</p>
-          <p className="text-xs text-slate-400">Minutes</p>
-        </div>
-
-        <div className="rounded-xl bg-slate-900 p-4">
-          <p className="text-3xl font-bold text-emerald-400">{seconds}</p>
-          <p className="text-xs text-slate-400">Seconds</p>
-        </div>
-
-      </div>
+      <p className="mt-6 text-gray-400">
+        First match • Gold Coast, Australia
+      </p>
 
     </section>
+  )
+}
+
+function TimeBox({ label, value }: any) {
+  return (
+    <div className="bg-black border border-[#501f3a] px-6 py-4 rounded-lg">
+      <div className="text-3xl font-bold text-[#14a098]">
+        {value}
+      </div>
+      <div className="text-xs mt-1 text-gray-400">
+        {label}
+      </div>
+    </div>
   )
 }
